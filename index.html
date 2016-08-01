@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+<head>
+  <script data-require="angular.js@1.5.7" data-semver="1.5.7" src="https://code.angularjs.org/1.5.7/angular.js"></script>
+  <link href="style.css" rel="stylesheet" />
+  <script src="script.js"></script>
+</head>
+
+<body ng-controller="mainController">
+  <div id="mainDiv">
+    <table class="inline">
+      <tr id="pagesNumbers">
+        <td ng-class="drawBorder(this)" ng-repeat="pageNumber in pagesCounter | startPagesFrom : currentPage | limitTo : pageNumbersLimit">
+          <div class="pointer" ng-bind="pageNumber" ng-click="selectPage(this)"></div>
+        </td>
+      </tr>
+    </table>
+
+    <div title="позиций на страницу" ng-class="drawBorderPerPage(perPageThird)" class="inline right pointer" ng-bind="perPageThird" ng-click="peoplePerPageSet(perPageThird)"></div>
+    <div title="позиций на страницу" ng-class="drawBorderPerPage(perPageSecond)" class="inline right marg pointer" ng-bind="perPageSecond" ng-click="peoplePerPageSet(perPageSecond)"></div>
+    <div title="позиций на страницу" ng-class="drawBorderPerPage(perPageFirst)" class="inline right marg pointer" ng-bind="perPageFirst" ng-click="peoplePerPageSet(perPageFirst)"></div>
+
+    <br>
+
+    <table id="peopleTable">
+      <thead class="rows">
+        <tr>
+          <td>аватар</td>
+          <td title="сортрировать по имени" class="pointer" ng-click="orderName()">фамилия; имя</td>
+          <td title="сортрировать по полу" class="pointer" ng-click="orderGender()">пол</td>
+          <td title="сортрировать по фирме" class="pointer" ng-click="orderCompany()">место работы</td>
+          <td title="сортрировать по должности" class="pointer" ng-click="orderJob()">должность</td>
+        </tr>
+      </thead>
+      <tbody class="rows" ng-repeat="person in peopleList | filter : search | filter : selected : true | orderBy : sortOrder | startFrom : currentPage * peoplePerPage | limitTo : peoplePerPage">
+        <tr title="клик для подробной инфо" class="pointer highlight" ng-click="openPerson(this)">
+          <td><img ng-src="{{person.avatar}}" /></td>
+          <td ng-bind="person.last_name + ' ' + person.first_name"></td>
+          <td ng-bind="person.gender"></td>
+          <td ng-bind="person.company_name"></td>
+          <td ng-bind="person.job_title"></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div id="selected">
+      <div id="selectedPerson">
+        <input id="close" type="button" value="X" ng-click="closeSelectedPerson()" />
+        <div class="inline" ng-bind="selectedPerson.first_name + ' ' + selectedPerson.last_name"></div>
+        <div class="inline right" ng-bind="selectedPerson.gender"></div>
+        <div>
+          <img id="selectedAvatar" ng-src="{{selectedAvatar}}" />
+          <table>
+            <tr>
+              <td ng-bind="'компания'"></td>
+              <td ng-bind="selectedPerson.company_name"></td>
+            </tr>
+            <tr>
+              <td ng-bind="'должность'"></td>
+              <td ng-bind="selectedPerson.job_title"></td>
+            </tr>
+            <tr>
+              <td ng-bind="'телефон'"></td>
+              <td ng-bind="selectedPerson.phone"></td>
+            </tr>
+            <tr>
+              <td ng-bind="'e-mail'"></td>
+              <td ng-bind="selectedPerson.email"></td>
+            </tr>
+
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <table>
+      <tr>
+        <td ng-class="drawBorder(this)" ng-repeat="pageNumber in pagesCounter | startPagesFrom : currentPage | limitTo : peoplePerPage">
+          <div class="pointer" ng-bind="pageNumber" ng-click="selectPage(this)"></div>
+        </td>
+      </tr>
+    </table>
+
+    <br>
+
+    <select ng-model="selected.gender" ng-options="gender for gender in peopleGendersList | unique | orderBy : 'gender'">
+      <option value=""></option>
+    </select>
+    <select ng-model="selected.company_name" ng-options="company for company in peopleCompaniesList | unique | orderBy : 'company_name'">
+      <option value=""></option>
+    </select>
+    <select ng-model="selected.job_title" ng-options="job for job in peopleJobsList | unique | orderBy : 'job_title'">
+      <option value=""></option>
+    </select>
+    <input type="button" value="сбросить" ng-click="selected = inherit" />
+    <div>
+      <input type="text" placeholder="фамилия" ng-model="search.last_name" />
+      <input type="text" placeholder="имя" ng-model="search.first_name" />
+    </div>
+  </div>
+</body>
+
+</html>
